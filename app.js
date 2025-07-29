@@ -13,15 +13,28 @@ function initScanner() {
         // Clear status message
         scannerStatus.innerHTML = '';
 
-        // Create scanner instance
+        // Create scanner instance with enhanced settings
         const html5QrcodeScanner = new Html5QrcodeScanner(
             "reader",
             {
-                fps: 10,
-                qrbox: 250,
-                supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA]
+                fps: 15, // Increased frame rate
+                qrbox: {
+                    width: 250,
+                    height: 100 // More rectangular shape for barcodes
+                },
+                aspectRatio: 1.0, // Square aspect ratio
+                disableFlip: true, // Disable image flip for better performance
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.UPC_A,
+                    Html5QrcodeSupportedFormats.UPC_E,
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.CODE_93
+                ]
             },
-            /* verbose= */ false
+            /* verbose= */ true // Enable verbose logging
         );
 
         // Render scanner
@@ -29,6 +42,9 @@ function initScanner() {
 
         // Hide retry button
         retryButton.style.display = 'none';
+
+        // Add focus indicator
+        scannerStatus.innerHTML = '<div style="color:green">Scanner ready ✔️</div>';
 
     } catch (error) {
         console.error('Scanner initialization failed:', error);
@@ -38,18 +54,24 @@ function initScanner() {
 }
 
 // Scan success handler
-function onScanSuccess(decodedText) {
+function onScanSuccess(decodedText, decodedResult) {
     console.log(`Scanned barcode: ${decodedText}`);
+    scannerStatus.innerHTML = '<div style="color:green">Barcode detected!</div>';
     fetchProductInfo(decodedText);
+
+    // Add visual confirmation
+    const readerDiv = document.getElementById('reader');
+    readerDiv.style.border = '3px solid green';
+    setTimeout(() => { readerDiv.style.border = '2px dashed #ccc'; }, 500);
 }
 
 // Scan failure handler
 function onScanFailure(error) {
-    // Don't show common "not found" errors
-    if (!error || error === '') return;
-
-    console.warn(`Scan error: ${error}`);
-    scannerStatus.innerHTML = `Error: ${error}`;
+    // Only show meaningful errors
+    if (error && error !== '') {
+        console.warn(`Scan error: ${error}`);
+        scannerStatus.innerHTML = `<div style="color:red">Scan error: ${error}</div>`;
+    }
 }
 
 // Product lookup function
