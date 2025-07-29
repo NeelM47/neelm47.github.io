@@ -2,63 +2,375 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Store Price Checker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Full-Screen Barcode Scanner</title>
     <style>
-        body { 
-            font-family: sans-serif; 
-            text-align: center; 
-            padding: 20px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        #reader { 
-            width: 80%;
-            max-width: 400px;
-            margin: 20px auto; 
-            border: 2px dashed #ccc;
-            min-height: 300px;
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            color: white;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            background: linear-gradient(90deg, #ff8a00, #e52e71);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        #scanner-container {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        #reader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        #scanner-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            pointer-events: none;
         }
-        #result { 
-            font-size: 1.5em; 
-            font-weight: bold; 
-            margin-top: 20px;
-            padding: 15px;
-            background: #f0f0f0;
-            border-radius: 8px;
+        
+        #scanner-frame {
+            width: 85%;
+            max-width: 400px;
+            height: 200px;
+            border: 3px solid #00e5ff;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+            animation: pulse 2s infinite;
         }
-        .permission-note {
-            color: #d32f2f;
-            font-size: 0.9em;
-            margin-top: 10px;
+        
+        .laser {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #e91e63;
+            box-shadow: 0 0 10px #e91e63;
+            top: 50%;
+            animation: scan 2.5s infinite linear;
         }
+        
+        #result-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-top-left-radius: 25px;
+            border-top-right-radius: 25px;
+            transform: translateY(0);
+            transition: transform 0.4s ease;
+            z-index: 3;
+        }
+        
+        #result-container.hidden {
+            transform: translateY(100%);
+        }
+        
+        #result {
+            font-size: 1.5rem;
+            text-align: center;
+            margin: 15px 0;
+            min-height: 2.5rem;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
         button {
-            padding: 12px 25px;
-            font-size: 1.1em;
-            background: #4285f4;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
             color: white;
             border: none;
-            border-radius: 4px;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 50px;
             cursor: pointer;
-            margin: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button.secondary {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+        }
+        
+        #scanner-status {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 1.1rem;
+            color: #00e5ff;
+            font-weight: 500;
+        }
+        
+        .instructions {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 500px;
+            padding: 0 20px;
+        }
+        
+        @keyframes scan {
+            0% { top: 10%; }
+            50% { top: 90%; }
+            100% { top: 10%; }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(0, 229, 255, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            #scanner-frame {
+                width: 90%;
+                height: 180px;
+            }
+            
+            button {
+                padding: 12px 20px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Scan a Barcode</h1>
-    <p>Point your camera at a product barcode</p>
+    <header>
+        <h1>Full-Screen Barcode Scanner</h1>
+        <div class="subtitle">Point your camera at any product barcode</div>
+    </header>
     
-    <div id="reader">
-        <p id="scanner-status">Loading scanner...</p>
+    <div id="scanner-container">
+        <div id="reader"></div>
+        
+        <div id="scanner-overlay">
+            <div id="scanner-frame">
+                <div class="laser"></div>
+            </div>
+            <div class="instructions">Position barcode inside the frame for scanning</div>
+            <div id="scanner-status">Initializing scanner...</div>
+        </div>
+        
+        <div id="result-container">
+            <div id="result">Ready to scan</div>
+            <div class="controls">
+                <button id="toggle-result">
+                    <i class="icon">▼</i> Hide Panel
+                </button>
+                <button id="retry-button" class="secondary">
+                    <i class="icon">🔄</i> Retry
+                </button>
+            </div>
+        </div>
     </div>
-    
-    <div id="result"></div>
-    <p class="permission-note">If camera doesn't appear, check browser permissions</p>
-    <button id="retry-button" style="display:none;">Enable Camera</button>
 
-    <!-- Use specific version of scanner library -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-    <script src="app.js"></script>
+    <script>
+        // Configuration
+        const config = {
+            google_sheet_url: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQqy_8L1lMxQ7yZ7Y5yv5J7f9J7b8Z0Jf8Z0Jf8Z0Jf8Z0Jf8Z0/pub?output=csv'
+        };
+
+        // DOM elements
+        const readerDiv = document.getElementById('reader');
+        const resultDiv = document.getElementById('result');
+        const scannerStatus = document.getElementById('scanner-status');
+        const retryButton = document.getElementById('retry-button');
+        const toggleResultBtn = document.getElementById('toggle-result');
+        const resultContainer = document.getElementById('result-container');
+        
+        // Initialize scanner
+        let html5QrcodeScanner;
+        
+        function initScanner() {
+            try {
+                // Create scanner instance with full-screen capabilities
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader", 
+                    { 
+                        fps: 15,
+                        qrbox: { width: 250, height: 150 },
+                        aspectRatio: 1.0,
+                        disableFlip: true,
+                        formatsToSupport: [
+                            Html5QrcodeSupportedFormats.EAN_13,
+                            Html5QrcodeSupportedFormats.UPC_A,
+                            Html5QrcodeSupportedFormats.CODE_128,
+                            Html5QrcodeSupportedFormats.CODE_39
+                        ],
+                        experimentalFeatures: {
+                            useBarCodeDetectorIfSupported: true
+                        }
+                    },
+                    /* verbose= */ true
+                );
+                
+                // Render scanner
+                html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+                
+                scannerStatus.textContent = "Scanner ready - looking for barcodes";
+                scannerStatus.style.color = "#4caf50";
+                
+            } catch (error) {
+                console.error('Scanner initialization failed:', error);
+                scannerStatus.innerHTML = `Scanner error: ${error.message}`;
+                scannerStatus.style.color = "#f44336";
+                retryButton.style.display = 'block';
+            }
+        }
+        
+        // Scan success handler
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log(`Scanned barcode: ${decodedText}`);
+            scannerStatus.innerHTML = `<span style="color:#4caf50">Barcode detected!</span>`;
+            
+            // Visual feedback
+            const scannerFrame = document.getElementById('scanner-frame');
+            scannerFrame.style.borderColor = "#4caf50";
+            scannerFrame.style.boxShadow = "0 0 30px rgba(76, 175, 80, 0.8)";
+            setTimeout(() => {
+                scannerFrame.style.borderColor = "#00e5ff";
+                scannerFrame.style.boxShadow = "0 0 20px rgba(0, 229, 255, 0.5)";
+            }, 500);
+            
+            // Show result panel
+            resultContainer.classList.remove('hidden');
+            
+            // Simulate product lookup
+            simulateProductLookup(decodedText);
+        }
+        
+        // Simulate product lookup from database
+        function simulateProductLookup(barcode) {
+            resultDiv.innerHTML = "🔍 Searching product database...";
+            
+            // Simulate network delay
+            setTimeout(() => {
+                const products = {
+                    "123456789012": "Premium Coffee - $12.99",
+                    "234567890123": "Organic Honey - $8.49",
+                    "345678901234": "Wireless Headphones - $89.99",
+                    "456789012345": "Natural Shampoo - $7.25",
+                    "567890123456": "Fitness Tracker - $45.50",
+                    "789012345678": "Vitamin C Supplements - $15.75"
+                };
+                
+                if (products[barcode]) {
+                    resultDiv.innerHTML = `<span style="color:#4caf50">✅ Found:</span><br>${products[barcode]}`;
+                } else {
+                    resultDiv.innerHTML = `<span style="color:#f44336">❌ Product not found</span><br>Barcode: ${barcode}`;
+                }
+            }, 1500);
+        }
+        
+        // Scan failure handler
+        function onScanFailure(error) {
+            if (error && error !== '') {
+                console.warn(`Scan error: ${error}`);
+                scannerStatus.innerHTML = `<span style="color:#ff9800">⚠️ ${error}</span>`;
+            }
+        }
+        
+        // Event listeners
+        retryButton.addEventListener('click', () => {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear();
+            }
+            resultDiv.textContent = "Resetting scanner...";
+            setTimeout(initScanner, 500);
+        });
+        
+        toggleResultBtn.addEventListener('click', () => {
+            if (resultContainer.classList.contains('hidden')) {
+                resultContainer.classList.remove('hidden');
+                toggleResultBtn.innerHTML = '<i class="icon">▼</i> Hide Panel';
+            } else {
+                resultContainer.classList.add('hidden');
+                toggleResultBtn.innerHTML = '<i class="icon">▲</i> Show Panel';
+            }
+        });
+        
+        // Initialize scanner when page loads
+        document.addEventListener('DOMContentLoaded', initScanner);
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (html5QrcodeScanner) {
+                    html5QrcodeScanner.clear();
+                    initScanner();
+                }
+            }, 500);
+        });
+    </script>
 </body>
 </html>
