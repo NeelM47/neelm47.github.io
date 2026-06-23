@@ -9,18 +9,18 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --navy: #0a192f;
-      --light-navy: #112240;
-      --lightest-navy: #233554;
-      --slate: #8892b0;
-      --light-slate: #ccd6f6;
-      --lightest-slate: #e6f1ff;
-      --green: #64ffda;
-      --green-tint: rgba(100,255,218,0.1);
+      --bg: #000000;
+      --bg-card: #0d0d0d;
+      --bg-card-hover: #141414;
+      --border: #1a1a1a;
+      --text: #ffffff;
+      --text-dim: #888888;
+      --cyan: #00e5ff;
+      --cyan-tint: rgba(0,229,255,0.08);
+      --red: #ff3366;
+      --red-tint: rgba(255,51,102,0.08);
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
       --font-mono: 'Fira Code', 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
-      --nav-height: 100px;
-      --tab-height: 42px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,1003 +28,776 @@
     html { scroll-behavior: smooth; }
 
     body {
-      background-color: var(--navy);
-      color: var(--slate);
+      background-color: var(--bg);
+      color: var(--text);
       font-family: var(--font-sans);
       line-height: 1.3;
       -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     ::selection {
-      background-color: var(--green-tint);
-      color: var(--lightest-slate);
+      background-color: var(--cyan-tint);
+      color: var(--cyan);
     }
 
     a { text-decoration: none; color: inherit; }
 
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: var(--navy); }
-    ::-webkit-scrollbar-thumb { background: var(--lightest-navy); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--slate); }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-    /* Sidebar left - social */
-    .sidebar-left {
-      position: fixed;
-      bottom: 0;
-      left: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      z-index: 10;
-    }
-    .sidebar-left::after {
-      content: '';
-      display: block;
-      width: 1px;
-      height: 90px;
-      background-color: var(--light-slate);
-    }
-    .sidebar-left a {
-      color: var(--light-slate);
-      font-size: 20px;
-      transition: color 0.25s, transform 0.25s;
-    }
-    .sidebar-left a:hover {
-      color: var(--green);
-      transform: translateY(-3px);
-    }
-
-    /* Sidebar right - email */
-    .sidebar-right {
-      position: fixed;
-      bottom: 0;
-      right: 40px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      z-index: 10;
-    }
-    .sidebar-right::after {
-      content: '';
-      display: block;
-      width: 1px;
-      height: 90px;
-      background-color: var(--light-slate);
-    }
-    .sidebar-right a {
-      color: var(--light-slate);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      letter-spacing: 0.1em;
-      writing-mode: vertical-rl;
-      transition: color 0.25s, transform 0.25s;
-    }
-    .sidebar-right a:hover {
-      color: var(--green);
-      transform: translateY(-3px);
-    }
-
-    /* Navigation */
-    nav {
+    #bg-canvas {
       position: fixed;
       top: 0;
+      left: 0;
       width: 100%;
-      height: var(--nav-height);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 50px;
-      z-index: 100;
-      background-color: rgba(10,25,47,0.85);
-      backdrop-filter: blur(10px);
-      transition: box-shadow 0.3s;
-    }
-    nav.scrolled { box-shadow: 0 10px 30px -10px rgba(2,12,27,0.7); }
-
-    .nav-logo {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 22px;
-      font-weight: 700;
-      border: 2px solid var(--green);
-      border-radius: 4px;
-      padding: 6px 10px;
-      transition: background-color 0.25s;
-    }
-    .nav-logo:hover { background-color: var(--green-tint); }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-    .nav-links a {
-      color: var(--lightest-slate);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      transition: color 0.25s;
-    }
-    .nav-links a:hover { color: var(--green); }
-    .nav-links a .num {
-      color: var(--green);
-      margin-right: 4px;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
     }
 
-    .nav-resume-btn {
-      color: var(--green) !important;
-      border: 1px solid var(--green);
-      border-radius: 4px;
-      padding: 10px 16px;
-      transition: background-color 0.25s;
-    }
-    .nav-resume-btn:hover {
-      background-color: var(--green-tint);
-    }
-
-    /* Main content wrapper */
-    main {
-      padding: 0 150px;
-    }
-
-    /* Sections */
-    section {
-      padding: 100px 0;
-      max-width: 1000px;
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
       margin: 0 auto;
-    }
-
-    .section-heading {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 40px;
-      white-space: nowrap;
-    }
-    .section-heading .num {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 20px;
-      font-weight: 400;
-    }
-    .section-heading h2 {
-      color: var(--lightest-slate);
-      font-size: 28px;
-      font-weight: 600;
-      white-space: nowrap;
-    }
-    .section-heading::after {
-      content: '';
-      display: block;
-      height: 1px;
-      width: 100%;
-      background-color: var(--lightest-navy);
-    }
-
-    /* Hero */
-    #hero {
+      padding: 40px 24px 60px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0;
     }
-    .hero-greeting {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 16px;
-      margin-bottom: 24px;
-    }
-    .hero-name {
-      color: var(--lightest-slate);
-      font-size: clamp(40px, 8vw, 80px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 8px;
-    }
-    .hero-subtitle {
-      color: var(--slate);
-      font-size: clamp(40px, 8vw, 80px);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-    .hero-description {
-      max-width: 540px;
-      font-size: 18px;
-      line-height: 1.5;
+
+    .hero {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
       margin-bottom: 48px;
     }
-    .hero-btn {
-      display: inline-block;
-      color: var(--green);
+    .hero-main { flex: 1; }
+    .hero-greeting {
+      color: var(--red);
       font-family: var(--font-mono);
-      font-size: 14px;
-      border: 1px solid var(--green);
-      border-radius: 4px;
-      padding: 18px 28px;
-      transition: background-color 0.25s;
+      font-size: 15px;
+      margin-bottom: 12px;
     }
-    .hero-btn:hover {
-      background-color: var(--green-tint);
-    }
-
-    /* About */
-    .about-inner {
-      display: grid;
-      grid-template-columns: 3fr 2fr;
-      gap: 50px;
-    }
-    .about-text p {
-      font-size: 17px;
-      line-height: 1.6;
-      margin-bottom: 16px;
-    }
-    .about-text p a {
-      color: var(--green);
-      transition: color 0.25s;
-    }
-    .about-text p a:hover { text-decoration: underline; }
-
-    .about-image-wrapper {
-      position: relative;
-      max-width: 300px;
-    }
-    .about-image-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      width: 100%;
-      height: 100%;
-      border: 2px solid var(--green);
-      border-radius: 4px;
-      z-index: -1;
-      transition: top 0.25s, left 0.25s;
-    }
-    .about-image-wrapper:hover::after {
-      top: 18px;
-      left: 18px;
-    }
-    .about-image-wrapper img {
-      width: 100%;
-      border-radius: 4px;
-      filter: grayscale(100%) contrast(1);
-      mix-blend-mode: multiply;
-      transition: filter 0.25s, transform 0.25s;
-    }
-    .about-image-wrapper:hover img {
-      filter: none;
-      mix-blend-mode: normal;
-    }
-    .about-image-wrapper .img-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--green);
-      border-radius: 4px;
-      opacity: 0.3;
-      mix-blend-mode: screen;
-      transition: opacity 0.25s;
-    }
-    .about-image-wrapper:hover .img-overlay {
-      opacity: 0;
-    }
-
-    /* Skills list */
-    .skills-list {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin-top: 20px;
-      list-style: none;
-    }
-    .skills-list li {
-      color: var(--slate);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      position: relative;
-      padding-left: 20px;
-    }
-    .skills-list li::before {
-      content: '▹';
-      position: absolute;
-      left: 0;
-      color: var(--green);
-      font-size: 14px;
-    }
-
-    /* Experience */
-    .jobs-inner {
-      display: flex;
-      gap: 40px;
-    }
-    .job-tabs {
-      display: flex;
-      flex-direction: column;
-      min-width: 200px;
-    }
-    .job-tab {
-      color: var(--slate);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      text-align: left;
-      padding: 12px 16px;
-      background: none;
-      border: none;
-      border-left: 2px solid var(--lightest-navy);
-      cursor: pointer;
-      transition: color 0.25s, background-color 0.25s, border-color 0.25s;
-    }
-    .job-tab:hover { background-color: var(--light-navy); }
-    .job-tab.active {
-      color: var(--green);
-      border-left-color: var(--green);
-      background-color: var(--light-navy);
-    }
-    .job-panel {
-      display: none;
-      flex: 1;
-    }
-    .job-panel.active { display: block; }
-    .job-panel h3 {
-      color: var(--lightest-slate);
-      font-size: 20px;
-      font-weight: 500;
+    .hero-name {
+      color: var(--text);
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 700;
+      line-height: 1.1;
       margin-bottom: 4px;
     }
-    .job-panel h3 .company {
-      color: var(--green);
+    .hero-subtitle {
+      color: var(--text-dim);
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 16px;
     }
-    .job-panel .date {
-      color: var(--slate);
+    .hero-desc {
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 520px;
+      margin-bottom: 20px;
+      color: var(--text-dim);
+    }
+    .hero-desc a { color: var(--cyan); }
+    .hero-desc a:hover { text-decoration: underline; }
+
+    .hero-links {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .hero-links a {
+      color: var(--text);
       font-family: var(--font-mono);
       font-size: 13px;
-      margin-bottom: 24px;
+      transition: color 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .job-panel ul {
-      list-style: none;
+    .hero-links a:hover { color: var(--cyan); }
+    .hero-links a svg { width: 18px; height: 18px; fill: currentColor; }
+    .hero-links .resume-link {
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 8px 16px;
+      transition: background-color 0.25s;
     }
-    .job-panel ul li {
-      color: var(--slate);
-      font-size: 16px;
-      line-height: 1.5;
-      margin-bottom: 12px;
-      padding-left: 28px;
+    .hero-links .resume-link:hover { background-color: var(--cyan-tint); }
+
+    .hero-photo {
+      flex-shrink: 0;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--cyan);
       position: relative;
     }
-    .job-panel ul li::before {
-      content: '▹';
-      position: absolute;
-      left: 4px;
-      color: var(--green);
+    .hero-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
-    /* Projects */
-    .projects-list {
-      display: flex;
-      flex-direction: column;
-      gap: 100px;
-    }
-    .project {
+    .tag-grid {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
-      align-items: center;
+      margin-bottom: 0;
     }
-    .project-content {
-      grid-column: 1 / 8;
-      grid-row: 1 / 2;
-      z-index: 2;
+    .tag-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px 16px;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      text-align: center;
     }
-    .project-content.right {
-      grid-column: 6 / 13;
-      text-align: right;
+    .tag-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -10px rgba(0,0,0,0.6);
     }
-    .project-overline {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 13px;
+    .tag-card.active {
+      border-color: var(--cyan);
+      background: var(--bg-card-hover);
+    }
+    .tag-card .icon {
+      color: var(--cyan);
       margin-bottom: 8px;
     }
-    .project-title {
-      color: var(--lightest-slate);
-      font-size: 24px;
+    .tag-card h3 {
+      color: var(--text);
+      font-size: 14px;
       font-weight: 600;
-      margin-bottom: 16px;
-      transition: color 0.25s;
+      margin-bottom: 4px;
     }
-    .project-title:hover { color: var(--green); }
-    .project-description {
-      background-color: var(--light-navy);
-      padding: 24px;
-      border-radius: 4px;
+    .tag-card p {
+      color: var(--text-dim);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .panel-container {
+      margin-top: 28px;
+      display: none;
+    }
+    .panel-container.open { display: block; }
+
+    .panel {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px;
+      max-height: 55vh;
+      overflow-y: auto;
+    }
+    .panel.active { display: block; }
+
+    .panel::-webkit-scrollbar { width: 4px; }
+    .panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .panel h2 {
+      color: var(--text);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel h2 .num {
+      color: var(--cyan);
+      font-family: var(--font-mono);
       font-size: 16px;
-      line-height: 1.5;
-      margin-bottom: 16px;
-      box-shadow: 0 10px 30px -15px rgba(2,12,27,0.7);
     }
-    .project-tech {
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .skill-group {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 16px;
+    }
+    .skill-group h4 {
+      color: var(--red);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+    .skill-group ul { list-style: none; }
+    .skill-group ul li {
+      color: var(--text-dim);
+      font-size: 13px;
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .skill-group ul li::before {
+      content: '▹';
+      position: absolute;
+      left: 0;
+      color: var(--cyan);
+      font-size: 12px;
+    }
+
+    .exp-entry {
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .exp-entry h3 {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .exp-entry h3 .company { color: var(--cyan); }
+    .exp-entry .meta {
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin: 4px 0 10px;
+    }
+    .exp-entry ul { list-style: none; }
+    .exp-entry ul li {
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 6px;
+      padding-left: 20px;
+      position: relative;
+      color: var(--text-dim);
+    }
+    .exp-entry ul li::before {
+      content: '▹';
+      position: absolute;
+      left: 2px;
+      color: var(--cyan);
+    }
+
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .proj-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 16px;
+      transition: transform 0.25s;
+    }
+    .proj-card:hover { transform: translateY(-2px); }
+    .proj-card h3 {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .proj-card p {
+      font-size: 13px;
+      line-height: 1.5;
+      margin-bottom: 8px;
+      color: var(--text-dim);
+    }
+    .proj-card .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 6px;
+    }
+    .proj-card .tags span {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--cyan);
+      background: var(--cyan-tint);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .proj-card .proj-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .proj-card .proj-links a {
+      color: var(--text);
+      font-size: 16px;
+      transition: color 0.25s;
+    }
+    .proj-card .proj-links a:hover { color: var(--cyan); }
+
+    .edu-entry {
+      display: flex;
+      gap: 16px;
       margin-bottom: 16px;
-      list-style: none;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
     }
-    .project-content.right .project-tech {
-      justify-content: flex-end;
-    }
-    .project-tech li {
-      color: var(--slate);
+    .edu-entry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .edu-entry .year {
+      color: var(--cyan);
       font-family: var(--font-mono);
       font-size: 12px;
       white-space: nowrap;
+      min-width: 100px;
     }
-    .project-links {
-      display: flex;
-      gap: 12px;
-    }
-    .project-content.right .project-links {
-      justify-content: flex-end;
-    }
-    .project-links a {
-      color: var(--lightest-slate);
-      font-size: 22px;
-      transition: color 0.25s;
-    }
-    .project-links a:hover { color: var(--green); }
-
-    .project-image {
-      grid-column: 6 / 13;
-      grid-row: 1 / 2;
-      position: relative;
-      z-index: 1;
-    }
-    .project-image.left {
-      grid-column: 1 / 8;
-    }
-    .project-image a {
-      display: block;
-      position: relative;
-      border-radius: 4px;
-      overflow: hidden;
-      background-color: var(--green);
-    }
-    .project-image a::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-color: var(--navy);
-      mix-blend-mode: screen;
-      transition: background-color 0.25s;
-      z-index: 1;
-    }
-    .project-image a:hover::before {
-      background-color: transparent;
-    }
-    .project-image img {
-      width: 100%;
-      height: auto;
-      display: block;
-      border-radius: 4px;
-    }
-
-    /* Other projects */
-    .other-projects-heading {
-      text-align: center;
-      margin: 80px 0 40px;
-    }
-    .other-projects-heading h2 {
-      color: var(--lightest-slate);
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .other-projects-heading a {
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 14px;
-    }
-    .other-projects-heading a:hover { text-decoration: underline; }
-
-    .other-projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 16px;
-    }
-    .other-project-card {
-      background-color: var(--light-navy);
-      padding: 32px 24px;
-      border-radius: 4px;
-      transition: transform 0.25s, box-shadow 0.25s;
-    }
-    .other-project-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 30px -15px rgba(2,12,27,0.7);
-    }
-    .other-project-card .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-    .other-project-card .card-header .folder-icon {
-      color: var(--green);
-      font-size: 40px;
-    }
-    .other-project-card .card-header .card-links a {
-      color: var(--lightest-slate);
-      font-size: 18px;
-      margin-left: 8px;
-      transition: color 0.25s;
-    }
-    .other-project-card .card-header .card-links a:hover { color: var(--green); }
-    .other-project-card h3 {
-      color: var(--lightest-slate);
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      transition: color 0.25s;
-    }
-    .other-project-card h3:hover { color: var(--green); }
-    .other-project-card p {
+    .edu-entry .info h4 {
+      color: var(--text);
       font-size: 15px;
-      line-height: 1.5;
-      margin-bottom: 24px;
+      font-weight: 600;
     }
-    .other-project-card .card-tech {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      list-style: none;
-    }
-    .other-project-card .card-tech li {
-      color: var(--slate);
-      font-family: var(--font-mono);
-      font-size: 12px;
+    .edu-entry .info p {
+      font-size: 13px;
+      color: var(--text-dim);
     }
 
-    /* Contact */
-    #contact {
+    .footer {
       text-align: center;
-      padding: 100px 0;
-    }
-    .contact-heading {
-      color: var(--green);
+      margin-top: 32px;
       font-family: var(--font-mono);
-      font-size: 14px;
-      margin-bottom: 16px;
+      font-size: 11px;
+      color: var(--border);
     }
-    #contact h2 {
-      color: var(--lightest-slate);
-      font-size: clamp(40px, 5vw, 56px);
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .contact-text {
-      max-width: 540px;
-      margin: 0 auto 48px;
-      font-size: 17px;
-      line-height: 1.5;
-    }
-    .contact-btn {
-      display: inline-block;
-      color: var(--green);
-      font-family: var(--font-mono);
-      font-size: 14px;
-      border: 1px solid var(--green);
-      border-radius: 4px;
-      padding: 18px 28px;
-      transition: background-color 0.25s;
-    }
-    .contact-btn:hover {
-      background-color: var(--green-tint);
-    }
+    .footer a { color: var(--text-dim); }
+    .footer a:hover { color: var(--cyan); }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 24px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--slate);
-    }
-    footer a { color: var(--green); transition: color 0.25s; }
-    footer a:hover { text-decoration: underline; }
-
-    /* Responsive */
-    @media (max-width: 1080px) {
-      main { padding: 0 100px; }
-      .sidebar-left { left: 20px; }
-      .sidebar-right { right: 20px; }
-    }
     @media (max-width: 768px) {
-      nav { padding: 0 24px; }
-      .nav-links { display: none; }
-      main { padding: 0 24px; }
-      .sidebar-left, .sidebar-right { display: none; }
-
-      .about-inner {
-        grid-template-columns: 1fr;
-      }
-      .about-image-wrapper {
-        margin: 0 auto;
-        max-width: 250px;
-      }
-
-      .jobs-inner {
-        flex-direction: column;
-      }
-      .job-tabs {
-        flex-direction: row;
-        overflow-x: auto;
-        min-width: unset;
-      }
-      .job-tab {
-        border-left: none;
-        border-bottom: 2px solid var(--lightest-navy);
-        white-space: nowrap;
-      }
-      .job-tab.active {
-        border-bottom-color: var(--green);
-        border-left-color: transparent;
-      }
-
-      .project {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-      .project-content {
-        text-align: left !important;
-      }
-      .project-content .project-tech {
-        justify-content: flex-start !important;
-      }
-      .project-content .project-links {
-        justify-content: flex-start !important;
-      }
-      .project-image {
-        order: -1;
-        width: 100%;
-        opacity: 0.25;
-        margin-bottom: -60px;
-      }
+      .hero { flex-direction: column-reverse; gap: 20px; align-items: center; text-align: center; }
+      .hero-desc { max-width: 100%; }
+      .hero-links { justify-content: center; }
+      .tag-grid { grid-template-columns: repeat(2, 1fr); }
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .proj-grid { grid-template-columns: 1fr; }
+      .edu-entry { flex-direction: column; gap: 4px; }
+      .panel { max-height: 60vh; }
     }
     @media (max-width: 480px) {
-      main { padding: 0 16px; }
-      .section-heading h2 { font-size: 22px; }
+      .tag-grid { grid-template-columns: 1fr 1fr; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .wrapper { padding: 24px 16px 40px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Left Sidebar -->
-  <div class="sidebar-left">
-    <a href="https://github.com/NeelM47" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-    </a>
-    <a href="https://www.linkedin.com/in/neel-more-267217219/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-    </a>
-    <a href="https://x.com/MoreNeel73635" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-    </a>
-    <a href="https://medium.com/@neelmore007" target="_blank" rel="noopener noreferrer" aria-label="Medium">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M0 0v24h24V0H0zm19.938 5.686L18.651 6.92a.376.376 0 0 0-.143.362v9.067a.376.376 0 0 0 .143.361l1.257 1.234v.271h-6.322v-.271l1.302-1.265c.128-.128.128-.165.128-.36V8.99l-3.62 9.195h-.49L6.69 8.99v6.163a.85.85 0 0 0 .233.707l1.694 2.054v.271H3.815v-.271l1.694-2.054a.82.82 0 0 0 .218-.707V8.392a.622.622 0 0 0-.203-.497L4 6.27V6h4.787l3.725 8.18 3.277-8.18H20v.271z"/></svg>
-    </a>
-  </div>
+  <canvas id="bg-canvas"></canvas>
 
-  <!-- Right Sidebar -->
-  <div class="sidebar-right">
-    <a href="mailto:neelmore007@gmail.com">neelmore007@gmail.com</a>
-  </div>
-
-  <!-- Navigation -->
-  <nav id="navbar">
-    <a href="#hero" class="nav-logo">NM</a>
-    <ul class="nav-links">
-      <li><a href="#about"><span class="num">01.</span>About</a></li>
-      <li><a href="#experience"><span class="num">02.</span>Experience</a></li>
-      <li><a href="#projects"><span class="num">03.</span>Projects</a></li>
-      <li><a href="#contact"><span class="num">04.</span>Contact</a></li>
-      <li><a href="https://neelm47.github.io/cv-as-code/ai-engineer.pdf" target="_blank" class="nav-resume-btn">Resume</a></li>
-    </ul>
-  </nav>
-
-  <!-- Main -->
-  <main>
-    <!-- Hero -->
-    <section id="hero">
-      <p class="hero-greeting">Hi, my name is</p>
-      <h1 class="hero-name">Neel Shirish More.</h1>
-      <h2 class="hero-subtitle">I build AI systems.</h2>
-      <p class="hero-description">
-        I'm an AI engineer specializing in building intelligent systems that leverage machine learning, large language models, and retrieval-augmented generation to solve complex problems.
-      </p>
-      <a href="https://neelm47.github.io/cv-as-code/ai-engineer.pdf" target="_blank" class="hero-btn">Check out my resume!</a>
-    </section>
-
-    <!-- About -->
-    <section id="about">
-      <div class="section-heading">
-        <span class="num">01.</span>
-        <h2>About Me</h2>
+  <div class="wrapper">
+    <div class="hero">
+      <div class="hero-main">
+        <p class="hero-greeting">G'day! I'm</p>
+        <h1 class="hero-name">Neel Shirish More.</h1>
+        <h2 class="hero-subtitle">AI &amp; Data Engineer.</h2>
+        <p class="hero-desc">
+          I build scalable data infrastructure, ML pipelines, and backend systems. MSc AI from <a href="https://www.manchester.ac.uk/" target="_blank">University of Manchester</a>. Currently building AI forecasting systems at <a href="https://rtnzero.com" target="_blank">RTN Zero</a>.
+        </p>
+        <div class="hero-links">
+          <a href="https://github.com/NeelM47" target="_blank" aria-label="GitHub">
+            <svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/neel-more-ai/" target="_blank" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <a href="mailto:neelmore007@gmail.com">Email</a>
+          <a href="https://neelm47.github.io/cv-as-code/ai-engineer.pdf" target="_blank" class="resume-link">Resume</a>
+        </div>
       </div>
-      <div class="about-inner">
-        <div class="about-text">
-          <p>
-            Hello! I'm a passionate AI graduate from the University of Manchester with a strong foundation in developing end-to-end AI solutions. My expertise lies in building Retrieval Augmented Generation (RAG) systems, agentic AI, and deploying scalable machine learning models.
-          </p>
-          <p>
-            I enjoy bridging the gap between complex AI concepts and practical, user-friendly applications. When I'm not coding, you can find me exploring the latest in AI research or contributing to open-source projects.
-          </p>
-          <p>Here are some technologies I've been working with:</p>
-          <ul class="skills-list">
-            <li>Python (PyTorch, TensorFlow)</li>
-            <li>LangChain &amp; LLMs</li>
-            <li>RAG &amp; Vector Databases</li>
-            <li>Django &amp; FastAPI</li>
-            <li>Docker &amp; Cloud</li>
-            <li>Neo4j &amp; Graph DBs</li>
+      <div class="hero-photo">
+        <img src="https://lh3.googleusercontent.com/d/1j9iMKRvFlE5FEGbv7cxgwBqySf8PaErT" alt="Neel Shirish More" />
+      </div>
+    </div>
+
+    <div class="tag-grid">
+      <div class="tag-card active" data-panel="skills">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        </div>
+        <h3>Skills</h3>
+        <p>Tech stack &amp; tools</p>
+      </div>
+      <div class="tag-card" data-panel="experience">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        </div>
+        <h3>Experience</h3>
+        <p>Where I've worked</p>
+      </div>
+      <div class="tag-card" data-panel="projects">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <h3>Projects</h3>
+        <p>Things I've built</p>
+      </div>
+      <div class="tag-card" data-panel="education">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <h3>Education</h3>
+        <p>Background &amp; research</p>
+      </div>
+    </div>
+
+    <div class="panel-container">
+      <div class="panel active" id="panel-skills">
+        <h2><span class="num">01.</span> Skills &amp; Technologies</h2>
+        <div class="skills-grid">
+          <div class="skill-group">
+            <h4>Languages &amp; OS</h4>
+            <ul>
+              <li>Python (6+ years)</li>
+              <li>Linux (8+ years)</li>
+              <li>SQL</li>
+              <li>TypeScript / Node.js</li>
+              <li>C++</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>ML &amp; AI</h4>
+            <ul>
+              <li>XGBoost / scikit-learn</li>
+              <li>LLMs &amp; ReAct Agents</li>
+              <li>RAG &amp; Vector DBs</li>
+              <li>Computer Vision (YOLO)</li>
+              <li>PyTorch / TensorFlow</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>Data Engineering</h4>
+            <ul>
+              <li>PostgreSQL / Prisma</li>
+              <li>Neo4j (Graph DB)</li>
+              <li>ETL Pipelines</li>
+              <li>MongoDB</li>
+              <li>FAISS / Pinecone</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>Backend &amp; API</h4>
+            <ul>
+              <li>FastAPI / Django</li>
+              <li>Express / TypeScript</li>
+              <li>BullMQ / Redis</li>
+              <li>REST API Architecture</li>
+              <li>Prisma ORM</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>DevOps &amp; Cloud</h4>
+            <ul>
+              <li>Docker / Kubernetes</li>
+              <li>Azure DevOps / CI/CD</li>
+              <li>AWS (S3, Databricks)</li>
+              <li>Linux System Admin</li>
+              <li>Git / DVC</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>Systems &amp; Tooling</h4>
+            <ul>
+              <li>Performance Profiling</li>
+              <li>Denodo / Oracle / SAS</li>
+              <li>Agile Methodologies</li>
+              <li>Data Governance</li>
+              <li>Zod / Schema Validation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-experience">
+        <h2><span class="num">02.</span> Where I've Worked</h2>
+        <div class="exp-entry">
+          <h3>Data Scientist &amp; AI Backend Developer <span class="company">@ RTN Zero Consulting</span></h3>
+          <p class="meta">Dec 2025 — Present &middot; Manchester, UK</p>
+          <ul>
+            <li>Architected a 6-stage chained ML forecasting pipeline (sales → menu → inventory → ops → shift → carbon) using XGBoost, served via FastAPI.</li>
+            <li>Led MongoDB → PostgreSQL migration with dual-schema architecture and live POS data ingestion.</li>
+            <li>Built a conversational AI assistant with ReAct tool-calling (Ollama LLMs) grounded in live DB data.</li>
+            <li>Designed async job queues (BullMQ, Redis) for automated retraining and forecast caching.</li>
+            <li>Developed a carbon emissions forecasting model covering Scope 1/2/3 with dish-level CO2 breakdowns.</li>
           </ul>
         </div>
-        <div class="about-image-wrapper">
-          <div class="img-overlay"></div>
-          <img src="https://lh3.googleusercontent.com/d/1j9iMKRvFlE5FEGbv7cxgwBqySf8PaErT" alt="Neel Shirish More" />
+        <div class="exp-entry">
+          <h3>Data Analyst (Data Engineering &amp; DevOps) <span class="company">@ Subtle Solutions</span></h3>
+          <p class="meta">Sept 2023 — Oct 2025 &middot; India (Remote)</p>
+          <ul>
+            <li>Built end-to-end Python data pipelines migrating commercial data to cloud storage lakes.</li>
+            <li>Maintained CI/CD pipelines via Azure DevOps with 99.9% production uptime.</li>
+            <li>Enforced data governance and compliance across cloud-based storage workflows.</li>
+          </ul>
+        </div>
+        <div class="exp-entry">
+          <h3>Software Engineering Virtual Experience <span class="company">@ JPMorgan Chase &amp; Co.</span></h3>
+          <p class="meta">Dec 2021 &middot; Remote</p>
+          <ul>
+            <li>Developed a real-time stock price data feed interface using Python for trader visualisation.</li>
+          </ul>
+        </div>
+        <div class="exp-entry">
+          <h3>Java &amp; Python Coding Intern <span class="company">@ Suven Consultants</span></h3>
+          <p class="meta">Jan 2022 — Feb 2022 &middot; India</p>
+          <ul>
+            <li>Engineered backend software for a "Consumer Loan Assistance Program".</li>
+          </ul>
         </div>
       </div>
-    </section>
 
-    <!-- Experience -->
-    <section id="experience">
-      <div class="section-heading">
-        <span class="num">02.</span>
-        <h2>Where I've Worked</h2>
-      </div>
-      <div class="jobs-inner">
-        <div class="job-tabs" role="tablist">
-          <button class="job-tab active" role="tab" data-index="0">AI Engineer</button>
-          <button class="job-tab" role="tab" data-index="1">AI Graduate</button>
-        </div>
-        <div class="job-panels">
-          <div class="job-panel active" role="tabpanel">
-            <h3>AI Engineer <span class="company">@ Freelance</span></h3>
-            <p class="date">2024 — Present</p>
-            <ul>
-              <li>Architected and built a complete RAG pipeline with intelligent agent capable of autonomous planning and hybrid graph-vector retrieval across user-uploaded documents.</li>
-              <li>Developed a multi-document text summarization tool leveraging sentence embeddings and clustering for extractive summarization.</li>
-              <li>Built a CV question-answering system using LangChain, FAISS, and Hugging Face models that answers queries from PDF documents.</li>
-              <li>Containerized all applications with Docker and deployed using modern DevOps practices.</li>
-            </ul>
-          </div>
-          <div class="job-panel" role="tabpanel">
-            <h3>AI Graduate <span class="company">@ University of Manchester</span></h3>
-            <p class="date">2022 — 2024</p>
-            <ul>
-              <li>Completed an MSc in Artificial Intelligence with a focus on natural language processing and knowledge representation.</li>
-              <li>Conducted research on hybrid retrieval methods combining graph databases and vector embeddings for improved RAG performance.</li>
-              <li>Developed multiple end-to-end AI projects spanning LLM-based agents, summarization systems, and knowledge extraction pipelines.</li>
-              <li>Gained hands-on experience with PyTorch, TensorFlow, Neo4j, Pinecone, and cloud deployment on AWS/Azure.</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Projects -->
-    <section id="projects">
-      <div class="section-heading">
-        <span class="num">03.</span>
-        <h2>Some Things I've Built</h2>
-      </div>
-      <div class="projects-list">
-        <!-- Project 1 -->
-        <div class="project">
-          <div class="project-content">
-            <p class="project-overline">Featured Project</p>
-            <a href="https://github.com/NeelM47/Knowledge-Extractor-RAG" target="_blank"><h3 class="project-title">Knowledge Extractor RAG</h3></a>
-            <div class="project-description">
-              Engineered a complete, containerized RAG application with an intelligent agent capable of autonomous planning and hybrid graph-vector retrieval to answer complex queries from user-uploaded documents.
+      <div class="panel" id="panel-projects">
+        <h2><span class="num">03.</span> Things I've Built</h2>
+        <div class="proj-grid">
+          <div class="proj-card">
+            <h3>Knowledge Extractor RAG</h3>
+            <p>Agentic RAG with Neo4j hybrid graph/vector retrieval, LangChain agent, and Django ingestion pipeline. Containerized with Docker.</p>
+            <div class="tags">
+              <span>LangChain</span><span>Neo4j</span><span>Django</span><span>Docker</span>
             </div>
-            <ul class="project-tech">
-              <li>LangChain</li>
-              <li>Gemini</li>
-              <li>Neo4j</li>
-              <li>Python</li>
-              <li>Django</li>
-              <li>Docker</li>
-            </ul>
-            <div class="project-links">
+            <div class="proj-links">
               <a href="https://github.com/NeelM47/Knowledge-Extractor-RAG" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-              <a href="#" target="_blank" aria-label="External Link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               </a>
             </div>
           </div>
-          <div class="project-image">
-            <a href="https://github.com/NeelM47/Knowledge-Extractor-RAG" target="_blank">
-              <img src="https://placehold.co/600x360/112240/64ffda?text=Knowledge+Extractor+RAG&font=inter" alt="Knowledge Extractor RAG" />
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 2 -->
-        <div class="project">
-          <div class="project-content right">
-            <p class="project-overline">Featured Project</p>
-            <a href="https://github.com/NeelM47/summarizer" target="_blank"><h3 class="project-title">Multi-Document Text Summarizer</h3></a>
-            <div class="project-description">
-              Developed a web-based tool to generate concise, coherent summaries from multiple text sources. The system uses an extractive approach, leveraging sentence embeddings and clustering to identify and compile the most salient information.
+          <div class="proj-card">
+            <h3>CorpRisk-AI</h3>
+            <p>Enterprise risk assessment with FastAPI microservices, Docker/K8s, ML and NLP for financial anomaly detection.</p>
+            <div class="tags">
+              <span>FastAPI</span><span>Kubernetes</span><span>Azure</span><span>Python</span>
             </div>
-            <ul class="project-tech">
-              <li>Hugging Face</li>
-              <li>Transformers</li>
-              <li>RoBERTa</li>
-              <li>NLTK</li>
-              <li>Streamlit</li>
-              <li>Python</li>
-            </ul>
-            <div class="project-links">
+            <div class="proj-links">
+              <a href="https://github.com/NeelM47/CorpRisk-AI" target="_blank" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="proj-card">
+            <h3>SMLP (Intel Collaboration)</h3>
+            <p>Symbolic ML Prover for formal verification of ML models, developed in collaboration with Intel engineers.</p>
+            <div class="tags">
+              <span>Python</span><span>C++</span><span>Intel</span><span>Research</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/NeelM47/smlp" target="_blank" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="proj-card">
+            <h3>Multi-Doc Summarizer</h3>
+            <p>Hybrid summarization using Sentence-Transformers, KMeans clustering, and BART refinement. Containerized with FastAPI and Docker.</p>
+            <div class="tags">
+              <span>Transformers</span><span>FastAPI</span><span>Docker</span>
+            </div>
+            <div class="proj-links">
               <a href="https://github.com/NeelM47/summarizer" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-              <a href="#" target="_blank" aria-label="External Link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               </a>
             </div>
           </div>
-          <div class="project-image left">
-            <a href="https://github.com/NeelM47/summarizer" target="_blank">
-              <img src="https://placehold.co/600x360/112240/64ffda?text=Multi-Document+Summarizer&font=inter" alt="Multi-Document Text Summarizer" />
-            </a>
-          </div>
-        </div>
-
-        <!-- Project 3 -->
-        <div class="project">
-          <div class="project-content">
-            <p class="project-overline">Featured Project</p>
-            <a href="https://github.com/NeelM47/rag-project" target="_blank"><h3 class="project-title">CV Question-Answering System</h3></a>
-            <div class="project-description">
-              Architected and built a complete Retrieval-Augmented Generation (RAG) pipeline that allows users to chat with their PDF documents. The application processes and indexes documents to provide accurate, context-aware answers to user queries.
+          <div class="proj-card">
+            <h3>RAG QA System</h3>
+            <p>RAG pipeline with FAISS vector database and Flan-T5 for accurate, context-aware answers from custom document stores.</p>
+            <div class="tags">
+              <span>LangChain</span><span>FAISS</span><span>Flan-T5</span>
             </div>
-            <ul class="project-tech">
-              <li>LangChain</li>
-              <li>Hugging Face</li>
-              <li>Flan-T5</li>
-              <li>FAISS</li>
-              <li>Streamlit</li>
-              <li>Python</li>
-            </ul>
-            <div class="project-links">
+            <div class="proj-links">
               <a href="https://github.com/NeelM47/rag-project" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-              <a href="#" target="_blank" aria-label="External Link">
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
               </a>
             </div>
           </div>
-          <div class="project-image">
-            <a href="https://github.com/NeelM47/rag-project" target="_blank">
-              <img src="https://placehold.co/600x360/112240/64ffda?text=CV+QA+System&font=inter" alt="CV Question-Answering System" />
-            </a>
+          <div class="proj-card">
+            <h3>Video-to-Book</h3>
+            <p>AI pipeline transforming YouTube videos into Bionic Reading eBooks using Groq (Llama 3.3, Whisper-Large-v3).</p>
+            <div class="tags">
+              <span>Llama 3.3</span><span>Whisper</span><span>Python</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/NeelM47/video-to-book" target="_blank" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="proj-card">
+            <h3>MDM Adaptive Inference</h3>
+            <p>Research implementation of adaptive token ordering in Masked Diffusion Models for reasoning in discrete domains.</p>
+            <div class="tags">
+              <span>PyTorch</span><span>Diffusion</span><span>Research</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/NeelM47/mdm-adaptive-inference" target="_blank" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
+          </div>
+          <div class="proj-card">
+            <h3>Fine-Tune GPT-2</h3>
+            <p>Complete pipeline for fine-tuning GPT-2 on custom datasets for domain-specific text generation.</p>
+            <div class="tags">
+              <span>PyTorch</span><span>Hugging Face</span><span>GPT-2</span>
+            </div>
+            <div class="proj-links">
+              <a href="https://github.com/NeelM47/fine-tune-gpt2" target="_blank" aria-label="GitHub">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              </a>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Other Projects -->
-      <div class="other-projects-heading">
-        <h2>Other Projects</h2>
-        <a href="https://github.com/NeelM47" target="_blank">view the archive</a>
-      </div>
-      <div class="other-projects-grid">
-        <div class="other-project-card">
-          <div class="card-header">
-            <div class="folder-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
-            </div>
-            <div class="card-links">
-              <a href="https://github.com/NeelM47" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-            </div>
+      <div class="panel" id="panel-education">
+        <h2><span class="num">04.</span> Education &amp; Research</h2>
+        <div class="edu-entry">
+          <div class="year">2023 – 2024</div>
+          <div class="info">
+            <h4>MSc. Artificial Intelligence</h4>
+            <p>University of Manchester &mdash; Manchester, UK</p>
+            <p style="font-size:12px;color:var(--text-dim);margin-top:2px;">Large-Scale Systems, Computer Vision, Data Science, Cognitive Robotics</p>
           </div>
-          <h3>Agentic AI Framework</h3>
-          <p>A modular framework for building autonomous AI agents with planning, tool-use, and memory capabilities.</p>
-          <ul class="card-tech">
-            <li>LangChain</li>
-            <li>Python</li>
-            <li>FastAPI</li>
-          </ul>
         </div>
-        <div class="other-project-card">
-          <div class="card-header">
-            <div class="folder-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
-            </div>
-            <div class="card-links">
-              <a href="https://github.com/NeelM47" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-            </div>
+        <div class="edu-entry">
+          <div class="year">2019 – 2023</div>
+          <div class="info">
+            <h4>B.E. Computer Engineering</h4>
+            <p>Bharati Vidyapeeth's College of Engineering &mdash; Pune, India</p>
+            <p style="font-size:12px;color:var(--text-dim);margin-top:2px;">Data Engineering, Operating Systems, Network Security, NLP, Algorithms</p>
           </div>
-          <h3>ML Model Deployment</h3>
-          <p>End-to-end pipeline for training, packaging, and deploying machine learning models on cloud infrastructure.</p>
-          <ul class="card-tech">
-            <li>Docker</li>
-            <li>AWS</li>
-            <li>MLflow</li>
-          </ul>
         </div>
-        <div class="other-project-card">
-          <div class="card-header">
-            <div class="folder-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
-            </div>
-            <div class="card-links">
-              <a href="https://github.com/NeelM47" target="_blank" aria-label="GitHub">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-              </a>
-            </div>
-          </div>
-          <h3>NLP Pipeline</h3>
-          <p>Custom NLP pipeline for text classification, entity extraction, and sentiment analysis using transformer models.</p>
-          <ul class="card-tech">
-            <li>PyTorch</li>
-            <li>Hugging Face</li>
-            <li>spaCy</li>
-          </ul>
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <h3 style="color:var(--text);font-size:15px;font-weight:600;margin-bottom:10px;">Publication</h3>
+          <p style="font-size:14px;line-height:1.5;color:var(--text-dim);">
+            Kadam Pratima, <strong style="color:var(--text);">More Neel</strong>. et al. (2023) &mdash;
+            <a href="https://drive.google.com/file/d/1OkyHni_bXQofdCnm0foQC_2WpdHwaD83/view" target="_blank" style="color:var(--cyan);">"Deep Learning and Artificial Intelligence for Games"</a>,
+            <em>IOSR Journal of Computer Engineering</em>.
+          </p>
+          <p style="font-size:14px;margin-top:8px;color:var(--text-dim);">
+            <a href="https://drive.google.com/file/d/102S0bvPKSVZFsVNGHvBQrOoozqPFVSFn/view" target="_blank" style="color:var(--cyan);">Microsoft Azure Solutions Architect Expert (AZ-305)</a>
+            &mdash; LinkedIn Learning, 2026
+          </p>
         </div>
       </div>
-    </section>
+    </div>
 
-    <!-- Contact -->
-    <section id="contact">
-      <p class="contact-heading">04. What's Next?</p>
-      <h2>Get In Touch</h2>
-      <p class="contact-text">
-        I'm currently looking for new opportunities and my inbox is always open. Whether you have a question or just want to say hi, I'll try my best to get back to you!
-      </p>
-      <a href="mailto:neelmore007@gmail.com" class="contact-btn">Say Hello</a>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer>
-    <p>
-      Loosely designed in <a href="https://www.figma.com/" target="_blank">Figma</a> and coded in <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> by yours truly.<br/>
-      Built with HTML &amp; CSS, deployed with <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.<br/>
-      All text is set in the <a href="https://rsms.me/inter/" target="_blank">Inter</a> typeface.
-    </p>
-  </footer>
+    <div class="footer">
+      Inspired by <a href="https://brittanychiang.com/" target="_blank">brittanychiang.com</a> &amp; <a href="https://adamlang.dev/" target="_blank">adamlang.dev</a>
+    </div>
+  </div>
 
   <script>
-    // Navbar shadow on scroll
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 0);
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let mouseX = -10, mouseY = -10;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    document.addEventListener('mousemove', e => {
+      mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseY = (e.clientY / window.innerHeight) * 2 - 1;
     });
 
-    // Job tabs
-    const tabs = document.querySelectorAll('.job-tab');
-    const panels = document.querySelectorAll('.job-panel');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
+    document.addEventListener('mouseleave', () => {
+      mouseX = -10;
+      mouseY = -10;
+    });
+
+    const gridSize = 40;
+    let time = 0;
+
+    function draw() {
+      time += 0.008;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const cols = Math.ceil(canvas.width / gridSize) + 1;
+      const rows = Math.ceil(canvas.height / gridSize) + 1;
+
+      for (let i = 0; i < cols; i++) {
+        ctx.beginPath();
+        let drew = false;
+        for (let j = 0; j < rows; j++) {
+          const x = i * gridSize;
+          const y = j * gridSize;
+          const dx = x / canvas.width * 2 - 1 - mouseX;
+          const dy = y / canvas.height * 2 - 1 - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const strength = Math.exp(-dist * 2.5);
+          if (strength < 0.01) { ctx.moveTo(x, y); continue; }
+          const wave = Math.sin(dist * 10 - time * 4) * 6 * strength;
+          const px = x + wave * (dx / (dist || 1));
+          const py = y + wave * (dy / (dist || 1));
+          ctx.globalAlpha = Math.min(1, strength * 2.5);
+          if (j === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+          drew = true;
+        }
+        ctx.globalAlpha = 1;
+        if (drew) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.4; ctx.stroke(); }
+      }
+
+      for (let j = 0; j < rows; j++) {
+        ctx.beginPath();
+        let drew = false;
+        for (let i = 0; i < cols; i++) {
+          const x = i * gridSize;
+          const y = j * gridSize;
+          const dx = x / canvas.width * 2 - 1 - mouseX;
+          const dy = y / canvas.height * 2 - 1 - mouseY;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const strength = Math.exp(-dist * 2.5);
+          if (strength < 0.01) { ctx.moveTo(x, y); continue; }
+          const wave = Math.sin(dist * 10 - time * 4) * 6 * strength;
+          const px = x + wave * (dx / (dist || 1));
+          const py = y + wave * (dy / (dist || 1));
+          ctx.globalAlpha = Math.min(1, strength * 2.5);
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+          drew = true;
+        }
+        ctx.globalAlpha = 1;
+        if (drew) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.4; ctx.stroke(); }
+      }
+
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    const tagCards = document.querySelectorAll('.tag-card');
+    const panels = document.querySelectorAll('.panel');
+    const panelContainer = document.querySelector('.panel-container');
+
+    tagCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const target = card.dataset.panel;
+        tagCards.forEach(c => c.classList.remove('active'));
+        card.classList.add('active');
         panels.forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        panels[tab.dataset.index].classList.add('active');
+        document.getElementById('panel-' + target).classList.add('active');
+        panelContainer.classList.add('open');
       });
     });
+
+    panelContainer.classList.add('open');
   </script>
 </body>
 </html>
