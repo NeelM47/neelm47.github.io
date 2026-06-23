@@ -851,62 +851,53 @@
       mouseY = -10;
     });
 
-    const gridSize = 25;
-    let time = 0;
+    const gridSize = 14;
 
     function draw() {
-      time += 0.01;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const cols = Math.ceil(canvas.width / gridSize) + 1;
-      const rows = Math.ceil(canvas.height / gridSize) + 1;
+      const cols = Math.ceil(canvas.width / gridSize);
+      const rows = Math.ceil(canvas.height / gridSize);
 
-      for (let i = 0; i < cols; i++) {
-        ctx.beginPath();
-        let drew = false;
+      for (let i = 0; i <= cols; i++) {
         for (let j = 0; j < rows; j++) {
           const x = i * gridSize;
           const y = j * gridSize;
-          const dx = x / canvas.width * 2 - 1 - mouseX;
-          const dy = y / canvas.height * 2 - 1 - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const strength = Math.exp(-dist * 6);
-          if (strength < 0.02) { ctx.moveTo(x, y); continue; }
-          const wave = Math.sin(dist * 14 - time * 5) * 4 * strength;
-          const px = x + wave * (dx / (dist || 1));
-          const py = y + wave * (dy / (dist || 1));
-          ctx.globalAlpha = Math.min(1, strength * 3);
-          if (j === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-          drew = true;
+          const cx = x / canvas.width * 2 - 1 - mouseX;
+          const cy = (y + gridSize / 2) / canvas.height * 2 - 1 - mouseY;
+          const dist = Math.sqrt(cx * cx + cy * cy);
+          const alpha = Math.exp(-dist * 14);
+          if (alpha < 0.01) continue;
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x, y + gridSize);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 0.3;
+          ctx.stroke();
         }
-        ctx.globalAlpha = 1;
-        if (drew) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.3; ctx.stroke(); }
       }
 
-      for (let j = 0; j < rows; j++) {
-        ctx.beginPath();
-        let drew = false;
+      for (let j = 0; j <= rows; j++) {
         for (let i = 0; i < cols; i++) {
           const x = i * gridSize;
           const y = j * gridSize;
-          const dx = x / canvas.width * 2 - 1 - mouseX;
-          const dy = y / canvas.height * 2 - 1 - mouseY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const strength = Math.exp(-dist * 6);
-          if (strength < 0.02) { ctx.moveTo(x, y); continue; }
-          const wave = Math.sin(dist * 14 - time * 5) * 4 * strength;
-          const px = x + wave * (dx / (dist || 1));
-          const py = y + wave * (dy / (dist || 1));
-          ctx.globalAlpha = Math.min(1, strength * 3);
-          if (i === 0) ctx.moveTo(px, py);
-          else ctx.lineTo(px, py);
-          drew = true;
+          const cx = (x + gridSize / 2) / canvas.width * 2 - 1 - mouseX;
+          const cy = y / canvas.height * 2 - 1 - mouseY;
+          const dist = Math.sqrt(cx * cx + cy * cy);
+          const alpha = Math.exp(-dist * 14);
+          if (alpha < 0.01) continue;
+          ctx.globalAlpha = alpha;
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(x + gridSize, y);
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 0.3;
+          ctx.stroke();
         }
-        ctx.globalAlpha = 1;
-        if (drew) { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 0.3; ctx.stroke(); }
       }
 
+      ctx.globalAlpha = 1;
       requestAnimationFrame(draw);
     }
     draw();
