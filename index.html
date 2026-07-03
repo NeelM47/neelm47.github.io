@@ -160,6 +160,13 @@
       margin-right: 4px;
     }
 
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      padding: 4px;
+    }
+
     .nav-resume-btn {
       color: var(--cyan) !important;
       border: 1px solid var(--cyan);
@@ -607,7 +614,38 @@
     }
     @media (max-width: 768px) {
       nav { padding: 0 24px; }
-      .nav-links { display: none; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        width: 100%;
+        flex-direction: column;
+        background: rgba(0,0,0,0.95);
+        padding: 24px;
+        gap: 20px;
+        align-items: flex-start;
+      }
+      .nav-links.open { display: flex; }
+      .nav-toggle {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 4px;
+      }
+      .nav-toggle span {
+        display: block;
+        width: 24px;
+        height: 2px;
+        background: var(--text);
+        transition: transform 0.25s, opacity 0.25s;
+      }
+      .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+      .nav-toggle.open span:nth-child(2) { opacity: 0; }
+      .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
       .hero-section { padding: 0 24px; }
       #content-section { padding: 60px 24px; }
       .sidebar-left, .sidebar-right { display: none; }
@@ -657,6 +695,9 @@
       <li><a href="#details"><span class="num">02.</span>Details</a></li>
       <li><a href="/resume.pdf" target="_blank" class="nav-resume-btn">Resume</a></li>
     </ul>
+    <button class="nav-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <section id="hero" class="hero-section">
@@ -919,9 +960,7 @@
 
   <footer>
     <p>
-      Loosely designed in <a href="https://www.figma.com/" target="_blank">Figma</a> and coded in <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> by yours truly.<br/>
-      Built with HTML &amp; CSS, deployed with <a href="https://pages.github.com/" target="_blank">GitHub Pages</a>.<br/>
-      All text is set in the <a href="https://rsms.me/inter/" target="_blank">Inter</a> typeface.
+      Available for freelance projects — AI pipelines, data infrastructure, and backend systems. <a href="#contact">Let's talk.</a>
     </p>
   </footer>
 
@@ -1019,6 +1058,21 @@
     });
 
     panelContainer.classList.add('open');
+
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (navToggle) {
+      navToggle.addEventListener('click', () => {
+        navToggle.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          navToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+        });
+      });
+    }
 
     const WORKER_URL = 'https://contact-form.neelm47.workers.dev';
     const form = document.getElementById('contact-form');
