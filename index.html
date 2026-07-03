@@ -1020,9 +1020,7 @@
 
     panelContainer.classList.add('open');
 
-    const PAT_TOKEN = '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';
-    const GITHUB_USER = 'NeelM47';
-    const GITHUB_REPO = 'neelm47.github.io';
+    const WORKER_URL = 'https://contact-form.neelm47.workers.dev';
     const form = document.getElementById('contact-form');
     const statusEl = document.getElementById('form-status');
 
@@ -1050,26 +1048,16 @@
         statusEl.className = '';
 
         try {
-          const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/dispatches`, {
+          const res = await fetch(WORKER_URL, {
             method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${PAT_TOKEN}`,
-              'Content-Type': 'application/json',
-              'User-Agent': 'portfolio-contact-form',
-            },
-            body: JSON.stringify({
-              event_type: 'contact-form',
-              client_payload: { name, email, message },
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, message }),
           });
 
           if (res.ok) {
             statusEl.textContent = 'Message sent! I\'ll get back to you soon.';
             statusEl.className = 'success';
             form.reset();
-          } else if (res.status === 403) {
-            statusEl.textContent = 'Service unavailable. Please email me directly.';
-            statusEl.className = 'error';
           } else {
             statusEl.textContent = 'Something went wrong. Try again or email me directly.';
             statusEl.className = 'error';
