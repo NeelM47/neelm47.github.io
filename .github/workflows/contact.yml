@@ -1,0 +1,38 @@
+name: Contact Form
+
+on:
+  repository_dispatch:
+    types: [contact-form]
+
+jobs:
+  send-mail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate payload
+        run: |
+          NAME="${{ github.event.client_payload.name }}"
+          HONEYPOT="${{ github.event.client_payload._honeypot }}"
+          if [ -n "$HONEYPOT" ]; then
+            echo "Honeypot filled — spam, skipping"
+            exit 0
+          fi
+          if [ -z "$NAME" ]; then
+            echo "Name is empty — skipping"
+            exit 0
+          fi
+
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: Portfolio contact from ${{ github.event.client_payload.name }}
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.SMTP_USER }}
+          body: |
+            Name: ${{ github.event.client_payload.name }}
+            Email: ${{ github.event.client_payload.email }}
+            Message:
+            ${{ github.event.client_payload.message }}

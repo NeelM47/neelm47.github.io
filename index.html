@@ -506,6 +506,87 @@
     .edu-entry .info h4 { color: var(--text); font-size: 15px; font-weight: 600; }
     .edu-entry .info p { font-size: 13px; color: var(--text-dim); }
 
+    #contact {
+      padding: 100px 150px 50px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    #contact-form {
+      max-width: 500px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    #contact-form input,
+    #contact-form textarea {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s;
+    }
+
+    #contact-form input:focus,
+    #contact-form textarea:focus {
+      border-color: var(--cyan);
+    }
+
+    #contact-form textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    #contact-form button {
+      background: transparent;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: background-color 0.25s;
+      align-self: flex-start;
+    }
+
+    #contact-form button:hover {
+      background-color: var(--cyan-tint);
+    }
+
+    #contact-form button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #form-status {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-dim);
+      min-height: 20px;
+    }
+
+    #form-status.success { color: var(--cyan); }
+    #form-status.error { color: var(--red); }
+
+    @media (max-width: 1080px) {
+      #contact { padding: 60px 100px 30px; }
+    }
+    @media (max-width: 768px) {
+      #contact { padding: 40px 24px 20px; }
+    }
+    @media (max-width: 480px) {
+      #contact { padding: 30px 16px 20px; }
+    }
+
     footer {
       text-align: center;
       padding: 24px;
@@ -821,6 +902,21 @@
     </div>
   </div>
 
+  <section id="contact">
+    <div class="section-heading">
+      <span class="num">03.</span>
+      <h2>Get In Touch</h2>
+    </div>
+    <form id="contact-form">
+      <input type="text" name="_honeypot" style="display:none" autocomplete="off" />
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <textarea name="message" placeholder="Your message..." rows="5" required></textarea>
+      <button type="submit">Send</button>
+      <div id="form-status"></div>
+    </form>
+  </section>
+
   <footer>
     <p>
       Loosely designed in <a href="https://www.figma.com/" target="_blank">Figma</a> and coded in <a href="https://code.visualstudio.com/" target="_blank">Visual Studio Code</a> by yours truly.<br/>
@@ -923,6 +1019,70 @@
     });
 
     panelContainer.classList.add('open');
+
+    const PAT_TOKEN = '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';
+    const GITHUB_USER = 'NeelM47';
+    const GITHUB_REPO = 'neelm47.github.io';
+    const form = document.getElementById('contact-form');
+    const statusEl = document.getElementById('form-status');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const honeypot = form.querySelector('input[name="_honeypot"]').value;
+        if (honeypot) return;
+
+        const name = form.querySelector('input[name="name"]').value.trim();
+        const email = form.querySelector('input[name="email"]').value.trim();
+        const message = form.querySelector('textarea[name="message"]').value.trim();
+
+        if (!name || !email || !message) {
+          statusEl.textContent = 'Please fill in all fields.';
+          statusEl.className = 'error';
+          return;
+        }
+
+        const btn = form.querySelector('button');
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        statusEl.textContent = '';
+        statusEl.className = '';
+
+        try {
+          const res = await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/dispatches`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${PAT_TOKEN}`,
+              'Content-Type': 'application/json',
+              'User-Agent': 'portfolio-contact-form',
+            },
+            body: JSON.stringify({
+              event_type: 'contact-form',
+              client_payload: { name, email, message },
+            }),
+          });
+
+          if (res.ok) {
+            statusEl.textContent = 'Message sent! I\'ll get back to you soon.';
+            statusEl.className = 'success';
+            form.reset();
+          } else if (res.status === 403) {
+            statusEl.textContent = 'Service unavailable. Please email me directly.';
+            statusEl.className = 'error';
+          } else {
+            statusEl.textContent = 'Something went wrong. Try again or email me directly.';
+            statusEl.className = 'error';
+          }
+        } catch {
+          statusEl.textContent = 'Network error. Please try again.';
+          statusEl.className = 'error';
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Send';
+      });
+    }
   </script>
 </body>
 </html>
