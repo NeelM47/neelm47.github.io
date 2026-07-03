@@ -1,5 +1,5 @@
 export default {
-  async fetch(request) {
+  async fetch(request, env) {
     if (request.method !== 'POST') {
       return new Response('Method not allowed', { status: 405 });
     }
@@ -16,7 +16,7 @@ export default {
         {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${GH_PAT}`,
+            Authorization: `Bearer ${env.GH_PAT}`,
             'Content-Type': 'application/json',
             'User-Agent': 'portfolio-contact-worker',
           },
@@ -30,7 +30,8 @@ export default {
       if (res.ok) {
         return new Response('OK', { status: 200 });
       } else {
-        return new Response('GitHub API error', { status: 502 });
+        const body = await res.text();
+        return new Response(`GitHub API error: ${res.status} ${body}`, { status: 502 });
       }
     } catch {
       return new Response('Bad request', { status: 400 });
