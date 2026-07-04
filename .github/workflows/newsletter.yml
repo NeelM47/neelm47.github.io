@@ -1,0 +1,26 @@
+name: Newsletter Signup
+
+on:
+  repository_dispatch:
+    types: [newsletter-signup]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send notification
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USER }}
+          password: ${{ secrets.SMTP_PASS }}
+          subject: 'New newsletter subscriber: ${{ github.event.client_payload.email }}'
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.SMTP_USER }}
+          body: |
+            New newsletter signup:
+
+            Email: ${{ github.event.client_payload.email }}
+
+            Add them to your mailing list (ConvertKit / Mailchimp / Buttondown).

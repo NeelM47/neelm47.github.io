@@ -608,6 +608,138 @@
     #form-status.success { color: var(--cyan); }
     #form-status.error { color: var(--red); }
 
+    .cta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      max-width: 700px;
+      margin: 0 auto 40px;
+    }
+    .cta-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .cta-card:hover {
+      border-color: var(--cyan);
+      transform: translateY(-3px);
+    }
+    .cta-card .icon { color: var(--cyan); margin-bottom: 12px; }
+    .cta-card h3 { color: var(--text); font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .cta-card p { color: var(--text-dim); font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
+    .cta-card .cta-btn {
+      display: inline-block;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 8px 16px;
+      transition: background-color 0.25s;
+      cursor: pointer;
+      background: transparent;
+    }
+    .cta-card .cta-btn:hover { background-color: var(--cyan-tint); }
+
+    .blog-section { margin-bottom: 80px; }
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .blog-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 6px;
+      padding: 20px;
+      transition: transform 0.25s;
+    }
+    .blog-card:hover { transform: translateY(-3px); }
+    .blog-card .blog-date {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--cyan);
+      margin-bottom: 6px;
+    }
+    .blog-card h3 {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .blog-card p {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      margin-bottom: 10px;
+    }
+    .blog-card a {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--cyan);
+      transition: color 0.25s;
+    }
+    .blog-card a:hover { text-decoration: underline; }
+
+    .newsletter {
+      max-width: 500px;
+      margin: 0 auto 40px;
+      text-align: center;
+    }
+    .newsletter h3 {
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .newsletter p {
+      color: var(--text-dim);
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .newsletter-form input {
+      flex: 1;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.25s;
+    }
+    .newsletter-form input:focus { border-color: var(--cyan); }
+    .newsletter-form button {
+      background: transparent;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      border: 1px solid var(--cyan);
+      border-radius: 4px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: background-color 0.25s;
+      white-space: nowrap;
+    }
+    .newsletter-form button:hover { background-color: var(--cyan-tint); }
+    #newsletter-status {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-top: 8px;
+      min-height: 18px;
+    }
+    #newsletter-status.success { color: var(--cyan); }
+    #newsletter-status.error { color: var(--red); }
+
     @media (max-width: 1080px) {
       #contact { padding: 60px 100px 30px; }
     }
@@ -678,6 +810,9 @@
       .tag-grid { grid-template-columns: repeat(2, 1fr); }
       .skills-grid { grid-template-columns: repeat(2, 1fr); }
       .proj-grid { grid-template-columns: 1fr; }
+      .cta-grid { grid-template-columns: 1fr; max-width: 400px; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .newsletter-form { flex-direction: column; max-width: 300px; }
       .edu-entry { flex-direction: column; gap: 4px; }
       .section-heading h2 { font-size: 22px; }
     }
@@ -818,6 +953,13 @@
           </div>
           <h3>Education</h3>
           <p>Background &amp; research</p>
+        </div>
+        <div class="tag-card" data-panel="tools">
+          <div class="icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <h3>Tools</h3>
+          <p>Recommended gear &amp; software</p>
         </div>
       </div>
 
@@ -975,14 +1117,110 @@
             </p>
           </div>
         </div>
+
+        <div class="panel" id="panel-tools">
+          <h2><span class="num">05.</span> Recommended Tools</h2>
+          <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;">Tools and services I use daily and recommend. Some links are affiliate referrals.</p>
+          <div class="skills-grid" style="grid-template-columns:repeat(2,1fr);">
+            <div class="skill-group">
+              <h4>AI &amp; LLMs</h4>
+              <ul>
+                <li><a href="https://ollama.com" target="_blank" style="color:var(--cyan);">Ollama</a> — local LLM runner</li>
+                <li><a href="https://openrouter.ai" target="_blank" style="color:var(--cyan);">OpenRouter</a> — multi-model API</li>
+                <li><a href="https://supabase.com" target="_blank" style="color:var(--cyan);">Supabase</a> — Postgres + Vector DB</li>
+                <li><a href="https://huggingface.co" target="_blank" style="color:var(--cyan);">Hugging Face</a> — models &amp; datasets</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h4>Dev &amp; Editor</h4>
+              <ul>
+                <li><a href="https://neovim.io" target="_blank" style="color:var(--cyan);">Neovim</a> — modal editor</li>
+                <li><a href="https://github.com" target="_blank" style="color:var(--cyan);">GitHub</a> — code hosting &amp; CI</li>
+                <li><a href="https://alacritty.org" target="_blank" style="color:var(--cyan);">Alacritty</a> — GPU terminal</li>
+                <li><a href="https://github.com/nikitabobko/AeroSpace" target="_blank" style="color:var(--cyan);">AeroSpace</a> — i3-like tiling WM</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h4>Cloud &amp; Infra</h4>
+              <ul>
+                <li><a href="https://cloudflare.com" target="_blank" style="color:var(--cyan);">Cloudflare</a> — CDN &amp; Workers</li>
+                <li><a href="https://www.digitalocean.com" target="_blank" style="color:var(--cyan);">DigitalOcean</a> — cloud hosting</li>
+                <li><a href="https://docker.com" target="_blank" style="color:var(--cyan);">Docker</a> — containers</li>
+                <li><a href="https://vercel.com" target="_blank" style="color:var(--cyan);">Vercel</a> — frontend deploy</li>
+              </ul>
+            </div>
+            <div class="skill-group">
+              <h4>Productivity</h4>
+              <ul>
+                <li><a href="https://nnn.rocks" target="_blank" style="color:var(--cyan);">nnn</a> — terminal file manager</li>
+                <li><a href="https://obsidian.md" target="_blank" style="color:var(--cyan);">Obsidian</a> — knowledge base</li>
+                <li><a href="https://cmus.github.io" target="_blank" style="color:var(--cyan);">cmus</a> — terminal music player</li>
+                <li><a href="https://github.com/junegunn/fzf" target="_blank" style="color:var(--cyan);">fzf</a> — fuzzy finder</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <section id="contact">
+  <section id="writing" style="padding:100px 150px 50px;max-width:1200px;margin:0 auto;position:relative;z-index:1;">
     <div class="section-heading">
       <span class="num">03.</span>
+      <h2>Latest Writing</h2>
+    </div>
+    <div class="blog-grid">
+      <div class="blog-card">
+        <div class="blog-date">Coming soon</div>
+        <h3>First post loading...</h3>
+        <p>I write about AI engineering, terminal workflows, and building things that work.</p>
+        <a href="https://medium.com/@neelmore007" target="_blank">Read on Medium →</a>
+      </div>
+      <div class="blog-card">
+        <div class="blog-date">Coming soon</div>
+        <h3>Second post loading...</h3>
+        <p>Follow me on Medium for the latest articles on RAG, MLOps, and keyboard-driven development.</p>
+        <a href="https://medium.com/@neelmore007" target="_blank">Read on Medium →</a>
+      </div>
+      <div class="blog-card">
+        <div class="blog-date">Coming soon</div>
+        <h3>Third post loading...</h3>
+        <p>New articles published regularly. Subscribe to stay updated.</p>
+        <a href="https://medium.com/@neelmore007" target="_blank">Read on Medium →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="section-heading">
+      <span class="num">04.</span>
       <h2>Get In Touch</h2>
+    </div>
+    <div class="cta-grid">
+      <div class="cta-card">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <h3>AI/ML Consulting</h3>
+        <p>Custom RAG pipelines, LLM agents, forecasting systems — end-to-end design and deployment.</p>
+        <a href="#contact-form" class="cta-btn" onclick="document.getElementById('contact-form').querySelector('input[name=name]').focus()">Hire me</a>
+      </div>
+      <div class="cta-card">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3>Project Build</h3>
+        <p>Need a data pipeline or AI prototype built? I take projects from concept to production.</p>
+        <a href="#contact-form" class="cta-btn" onclick="document.getElementById('contact-form').querySelector('input[name=name]').focus()">Start a project</a>
+      </div>
+      <div class="cta-card">
+        <div class="icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>CV Review</h3>
+        <p>AI/ML-specific resume feedback from someone who's hired and been hired in this space.</p>
+        <a href="#contact-form" class="cta-btn" onclick="document.getElementById('contact-form').querySelector('input[name=name]').focus()">Get feedback</a>
+      </div>
     </div>
     <form id="contact-form">
       <input type="text" name="_honeypot" style="display:none" autocomplete="off" />
@@ -995,6 +1233,15 @@
   </section>
 
   <footer>
+    <div class="newsletter">
+      <h3>Stay in the loop</h3>
+      <p>Monthly updates on what I'm building — AI pipelines, terminal workflows, and lessons learned. No spam.</p>
+      <form class="newsletter-form" id="newsletter-form">
+        <input type="email" name="email" placeholder="your@email.com" required />
+        <button type="submit">Subscribe</button>
+      </form>
+      <div id="newsletter-status"></div>
+    </div>
     <p>
       Available for freelance projects — AI pipelines, data infrastructure, and backend systems. <a href="#contact">Let's talk.</a>
     </p>
@@ -1174,6 +1421,41 @@
 
         btn.disabled = false;
         btn.textContent = 'Send';
+      });
+    }
+
+    const newsletterForm = document.getElementById('newsletter-form');
+    const newsletterStatus = document.getElementById('newsletter-status');
+    if (newsletterForm) {
+      newsletterForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = newsletterForm.querySelector('input').value.trim();
+        if (!email) return;
+        const btn = newsletterForm.querySelector('button');
+        btn.disabled = true;
+        btn.textContent = 'Subscribing...';
+        newsletterStatus.textContent = '';
+        newsletterStatus.className = '';
+        try {
+          const res = await fetch(WORKER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: 'newsletter', email }),
+          });
+          if (res.ok) {
+            newsletterStatus.textContent = 'Subscribed! Check your inbox for a confirmation.';
+            newsletterStatus.className = 'success';
+            newsletterForm.reset();
+          } else {
+            newsletterStatus.textContent = 'Something went wrong. Try again.';
+            newsletterStatus.className = 'error';
+          }
+        } catch {
+          newsletterStatus.textContent = 'Network error. Please try again.';
+          newsletterStatus.className = 'error';
+        }
+        btn.disabled = false;
+        btn.textContent = 'Subscribe';
       });
     }
   </script>
