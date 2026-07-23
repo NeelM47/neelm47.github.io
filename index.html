@@ -750,6 +750,18 @@
       #contact { padding: 30px 16px 20px; }
     }
 
+    .details-inner {
+      padding: 0 150px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    #writing {
+      padding: 100px 150px 50px;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
     footer {
       text-align: center;
       padding: 24px;
@@ -767,6 +779,8 @@
       #content-section { padding: 100px; }
       .sidebar-left { left: 20px; }
       .sidebar-right { right: 20px; }
+      .details-inner { padding: 0 100px; }
+      #writing { padding: 80px 100px 50px; }
     }
     @media (max-width: 768px) {
       nav { padding: 0 24px; }
@@ -815,12 +829,16 @@
       .newsletter-form { flex-direction: column; max-width: 300px; }
       .edu-entry { flex-direction: column; gap: 4px; }
       .section-heading h2 { font-size: 22px; }
+      .details-inner { padding: 0 24px; }
+      #writing { padding: 60px 24px 40px; }
     }
     @media (max-width: 480px) {
       .hero-section { padding: 0 16px; }
       #content-section { padding: 40px 16px; }
       .tag-grid { grid-template-columns: 1fr 1fr; }
       .skills-grid { grid-template-columns: 1fr; }
+      .details-inner { padding: 0 16px; }
+      #writing { padding: 40px 16px 30px; }
     }
   </style>
 </head>
@@ -882,7 +900,7 @@
   </section>
 
   <div id="details" style="position: relative; z-index: 1;">
-    <div style="padding: 0 150px; max-width: 1200px; margin: 0 auto;">
+    <div class="details-inner">
       <div class="section-heading">
         <span class="num">01.</span>
         <h2>About Me</h2>
@@ -1171,7 +1189,7 @@
     </div>
   </div>
 
-  <section id="writing" style="padding:100px 150px 50px;max-width:1200px;margin:0 auto;position:relative;z-index:1;">
+  <section id="writing">
     <div class="section-heading">
       <span class="num">03.</span>
       <h2>Latest Writing</h2>
